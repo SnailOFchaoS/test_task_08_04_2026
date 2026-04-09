@@ -1,0 +1,39 @@
+@import '../../common/styles.scss';
+
+.button {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	border: none;
+	cursor: pointer;
+	background-color: #d91722;
+	color: #fffff0;
+	font-weight: 600;
+	text-transform: uppercase;
+	transition: filter 0.2s ease, transform 0.15s ease;
+	
+	@include scale(padding-top, 14px);
+	@include scale(padding-bottom, 14px);
+	@include scale(padding-left, 40px);
+	@include scale(padding-right, 40px);
+	@include scale(border-radius, 50px);
+	@include scale(font-size, 16px);
+
+
+	&:hover {
+		filter: brightness(1.06);
+	}
+
+	&:active {
+		filter: brightness(0.92);
+		transform: scale(0.98);
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.6;
+		filter: none;
+		transform: none;
+	}
+}

@@ -1,0 +1,27 @@
+@import '../../common/styles.scss';
+
+.container {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	// display: flex;
+	width: 100%;
+	background-color: rgba(69, 123, 157, 0.5);
+	backdrop-filter: blur(10px);
+	@include scale(height, 126px);
+	@include scale(padding-right, 20px);
+
+	.buttonText{
+		font-weight: 500;
+		@include scale(font-size, 20px);
+		color: #FFFFF0;
+	}
+
+}

@@ -11,12 +11,25 @@
 	left: 0;
 	right: 0;
 	z-index: 10;
-	// display: flex;
 	width: 100%;
 	background-color: rgba(69, 123, 157, 0.5);
 	backdrop-filter: blur(10px);
 	@include scale(height, 126px);
 	@include scale(padding-right, 20px);
+
+	.userInfo {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		@include scale(gap, 10px);
+	}
+
+	.userInfoText, .buttonText {
+		font-family: var(--montserrat), sans-serif;
+		font-weight: 500;
+		@include scale(font-size, 24px);
+		color: #FFFFF0;
+	}
 
 	.buttonText{
 		font-weight: 500;

@@ -1,4 +1,4 @@
-@import '../../common/styles.scss';
+@use '../../common/styles.scss' as *;
 
 .container {
 	box-sizing: border-box;

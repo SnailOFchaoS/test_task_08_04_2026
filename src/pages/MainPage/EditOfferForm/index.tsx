@@ -1,42 +1,74 @@
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
+
+import { Button } from '../../../components'
+import type { OfferFormFields } from '../../../common/offerFormToApiFields.ts'
+import type { AppDispatch, RootState } from '../../../store'
+import type { Offer } from '../../../types/offer.ts'
+import { createOffer, deleteOffer, updateOffer } from '../../../store/slices/offers/thunks.ts'
+
+import { EditOfferFields } from './EditOfferFields/index.tsx'
 import styles from './EditOffer.module.scss'
 
-interface OfferShort {
-	id: string
-	discipline?: string[]
-	offerName: string
-	date?: string
-	price: string
-	time?: string
-	level?: string[]
-}
-
-const emptyForm: OfferShort = {
+const emptyForm: OfferFormFields = {
 	id: '',
-	discipline: [],
+	discipline: '',
 	offerName: '',
 	date: '',
 	price: '',
 	time: '',
-	level: [],
+	level: '',
+	important: false,
 }
 
-function offerToForm(offer: Record<string, unknown>): OfferShort {
-	return {
+const EditOfferForm = () => {
+	const dispatch = useDispatch<AppDispatch>()
+	const { currentOffer, error: offersError, isLoading} = useSelector((state: RootState) => state.offers)
+	const [formData, setFormData] = useState<OfferFormFields>(emptyForm)
+	const { decodedToken } = useSelector((state: RootState) => state.auth)
+	const isAdmin = decodedToken?.role === 'admin'
+
+	const arrayToSlashField = (parts: string[] | undefined): string => {
+		if (!parts?.length) {
+			return ''
+		}
+		return parts.map((s) => s.trim()).filter(Boolean).join(' / ')
+	}
+
+	const offerToForm = (offer: Offer): OfferFormFields => ({
 		id: String(offer.id ?? ''),
-		discipline: Array.isArray(offer.discipline) ? (offer.discipline as string[]) : [],
+		discipline: arrayToSlashField(offer.discipline),
 		offerName: String(offer.offerName ?? ''),
 		date: String(offer.date ?? ''),
 		price: String(offer.price ?? ''),
 		time: String(offer.time ?? ''),
-		level: Array.isArray(offer.level) ? (offer.level as string[]) : [],
-	}
-}
+		level: arrayToSlashField(offer.level),
+		important: Boolean(offer.important),
+	})
 
-const EditOfferForm: React.FC = () => {
-	const { currentOffer } = useSelector((state: { offers: { currentOffer: Record<string, unknown> | null } }) => state.offers)
-	const [formData, setFormData] = useState<OfferShort>(emptyForm)
+	const setField = useCallback(
+		<K extends keyof OfferFormFields,>(key: K, value: OfferFormFields[K]) => {
+			setFormData((prev) => ({ ...prev, [key]: value }))
+		},[]
+	)
+
+	const handleCreate = async () => {
+		await dispatch(createOffer(formData)).unwrap()
+	}
+
+	const handleUpdate = async () => {
+		if (!formData.id) {
+			return
+		}
+		await dispatch(updateOffer({ id: formData.id, form: formData })).unwrap()
+	}
+
+	const handleDelete = async () => {
+		if (!formData.id) {
+			return
+		}
+		await dispatch(deleteOffer(formData.id)).unwrap()
+	}
 
 	useEffect(() => {
 		if (currentOffer) {
@@ -46,109 +78,53 @@ const EditOfferForm: React.FC = () => {
 		}
 	}, [currentOffer])
 
-	const setField = useCallback(
-		<K extends keyof OfferShort>(key: K, value: OfferShort[K]) => {
-			setFormData((prev) => ({ ...prev, [key]: value }))
-		},
-		[],
-	)
-
-	const onDisciplineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const raw = e.target.value
-		setField(
-			'discipline',
-			raw ? raw.split('/').map((s) => s.trim()).filter(Boolean) : [],
-		)
-	}
-
-	const onLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const raw = e.target.value
-		setField('level', raw ? raw.split('/').map((s) => s.trim()).filter(Boolean) : [])
-	}
-
 	return (
-		<div className={styles.slide}>
-			<article
-				className={styles.slideWrapper}
-				aria-label={(currentOffer?.offerName as string) || formData.offerName || 'Редактирование оффера'}
-			>
-				<div className={styles.slideInfoLine}>
-					<div className={`${styles.halfLine} ${styles.discipline}`}>
-						<input
-							type="text"
-							className={styles.fieldInput}
-							value={formData.discipline?.join('/') ?? ''}
-							onChange={onDisciplineChange}
-							placeholder="Дисциплины"
-							aria-label="Дисциплины"
-							autoComplete="off"
-						/>
-					</div>
-					<div className={`${styles.halfLine} ${styles.offerName}`}>
-						<textarea
-							rows={2}
-							className={styles.fieldTextarea}
-							value={formData.offerName}
-							onChange={(e) => setField('offerName', e.target.value)}
-							placeholder="Название"
-							aria-label="Название предложения"
-							autoComplete="off"
-						/>
-					</div>
-				</div>
-				<div className={styles.slideInfoLine}>
-					<div className={`${styles.halfLine} ${styles.dateAndTime}`}>
-						<input
-							type="text"
-							className={styles.fieldInput}
-							value={formData.date ?? ''}
-							onChange={(e) => setField('date', e.target.value)}
-							placeholder="Дата"
-							aria-label="Дата"
-							autoComplete="off"
-						/>
-					</div>
-					<div className={`${styles.halfLine} ${styles.price} ${styles.priceRow}`}>
-						<input
-							type="text"
-							inputMode="decimal"
-							className={styles.fieldInput}
-							value={formData.price}
-							onChange={(e) => setField('price', e.target.value)}
-							placeholder="0"
-							aria-label="Цена"
-							autoComplete="off"
-						/>
-						<span className={styles.currencySuffix} aria-hidden>
-							{'\u00a0'}р
-						</span>
-					</div>
-				</div>
-				<div className={styles.slideInfoLine}>
-					<div className={`${styles.halfLine} ${styles.dateAndTime}`}>
-						<input
-							type="text"
-							className={styles.fieldInput}
-							value={formData.time ?? ''}
-							onChange={(e) => setField('time', e.target.value)}
-							placeholder="Время"
-							aria-label="Время"
-							autoComplete="off"
-						/>
-					</div>
-					<div className={`${styles.halfLine} ${styles.ridingLevel}`}>
-						<input
-							type="text"
-							className={styles.fieldInput}
-							value={formData.level?.join('/') ?? ''}
-							onChange={onLevelChange}
-							placeholder="Уровень"
-							aria-label="Уровень"
-							autoComplete="off"
-						/>
-					</div>
-				</div>
-			</article>
+		<div className={styles.container}>
+			<div className={styles.slide}>
+				{!currentOffer?.id && !isAdmin ? (
+					<div className={styles.noRightsText}>У вас нет прав на создание предложений</div>
+				) : (
+					<EditOfferFields
+						formData={formData}
+						setField={setField}
+						isAdmin={isAdmin}
+					/>
+				)}
+			</div>
+			<div className={styles.buttonsForm}>
+				{!isAdmin && currentOffer?.id ? (
+					<div className={styles.noRightsText}>У вас нет прав на редактирование предложений</div>
+				) : isAdmin ? (
+					<>
+						{offersError ? <p className={styles.apiError}>{offersError}</p> : null}
+						<Button 
+							type="button" 
+							onClick={() => handleCreate()}
+							disabled={isLoading}
+						>
+							<span className={styles.buttonText}>Добавить</span>
+						</Button>
+						{currentOffer?.id ? (
+							<>
+								<Button 
+									type="button" 
+									onClick={() => handleUpdate()}
+									disabled={isLoading}
+								>
+									<span className={styles.buttonText}>Изменить</span>
+								</Button>
+								<Button 
+									type="button" 
+									onClick={() => handleDelete()}
+									disabled={isLoading}
+								>
+									<span className={styles.buttonText}>Удалить</span>
+								</Button>
+							</>
+						) : null}
+					</>
+				) : null}
+			</div>
 		</div>
 	)
 }

@@ -1,4 +1,4 @@
-@import '../../common/styles.scss';
+@use '../../common/styles.scss' as *;
 
 .container {
 	box-sizing: border-box;
@@ -32,5 +32,12 @@
 		flex-direction: row;
 		align-content: center;
 		justify-content: center;
+	}
+
+	.noRightsText {
+		font-family: var(--montserrat), sans-serif;
+		font-weight: 500;
+		color: #fffff0;
+		@include scale(font-size, 60px);
 	}
 }

@@ -9,7 +9,7 @@ function App() {
 
   return (
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path='/' element={<MainPage />} />
           <Route path='/enter' element={<EnterPage />} />

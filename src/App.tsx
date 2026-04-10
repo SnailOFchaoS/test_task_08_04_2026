@@ -2,7 +2,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import './App.css'
-import { MainPage } from './pages'
+import { MainPage, EnterPage } from './pages'
 import { store } from './store'
 
 function App() {
@@ -12,6 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<MainPage />} />
+          <Route path='/enter' element={<EnterPage />} />
         </Routes>
 
       </BrowserRouter>

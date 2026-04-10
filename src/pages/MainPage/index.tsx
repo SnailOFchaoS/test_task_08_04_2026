@@ -11,22 +11,12 @@ import EditOfferForm from './EditOfferForm'
 const MainPage = () => {
 	const dispatch = useDispatch<AppDispatch>()
 
-	const {offers, currentOffer, isLoading, error} = useSelector((state: any) => state.offers);
-
+	const {offers} = useSelector((state: any) => state.offers);
+	const {decodedToken} = useSelector((state: any) => state.auth);
+	
 	useEffect(() => {
-		if(error){
-			console.error(error);
-		}
-		if(isLoading){
-			console.log('Loading...');
-		}
-		if(offers.length > 0){
-			console.log(offers);
-		}
-		if(currentOffer){
-			console.log(currentOffer);
-		}
-	}, [offers, isLoading, error, currentOffer]);
+		console.log(decodedToken);
+	}, [decodedToken]);
 
 	useEffect(() => {
 		void dispatch(fetchOffers());

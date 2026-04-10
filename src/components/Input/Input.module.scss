@@ -1,0 +1,51 @@
+@import '../../common/styles.scss';
+
+.inputGroup {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+
+	.label {
+		display: flex;
+		align-items: center;
+		font-family: var(--montserrat), sans-serif;
+		font-weight: 600;
+		color: #1a2344;
+
+		@include scale(margin-left, 16px);
+		@include scale(height, 42px);
+		@include scale(font-size, 20px);
+	}
+
+	.input {
+		box-sizing: border-box;
+		display: flex;
+		width: 100%;
+		align-items: center;
+		border: none;
+		background-color: #a8dadc;
+		font-family: var(--montserrat), sans-serif;
+		color: #1a2344;
+		outline: none;
+		transition: box-shadow 0.2s ease;
+
+		@include scale(height, 42px);
+		@include scale(padding-left, 16px);
+		@include scale(padding-right, 16px);
+		@include scale(border-radius, 40px);
+		@include scale(font-size, 18px);
+
+		&::placeholder {
+			color: rgba(26, 35, 68, 0.5);
+		}
+
+		&:focus-visible {
+			box-shadow: 0 0 0 2px #457b9d;
+		}
+
+		&:disabled {
+			opacity: 0.65;
+			cursor: not-allowed;
+		}
+	}
+}

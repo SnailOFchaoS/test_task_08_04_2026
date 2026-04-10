@@ -1,19 +1,22 @@
 import { jwtDecode } from 'jwt-decode'
 
+export type JwtPayloadValue = string | number | boolean | undefined
+
 export type JwtPayloadBase = {
 	exp?: number
 	iat?: number
 	iss?: string
 	aud?: string
 	sub?: string
-	[key: string]: unknown
+	username?: string
+	role?: string
+	userId?: string
+	[key: string]: JwtPayloadValue
 }
 
-export function decodeJwtPayload<T extends Record<string, unknown> = JwtPayloadBase>(
-	token: string,
-): T | null {
+export const decodeJwtPayload = (token: string): JwtPayloadBase | null => {
 	try {
-		return jwtDecode<T>(token.trim())
+		return jwtDecode<JwtPayloadBase>(token.trim())
 	} catch {
 		return null
 	}

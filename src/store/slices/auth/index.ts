@@ -1,15 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { decodeJwtPayload } from '../../../common/decodeJWT'
+import { decodeJwtPayload, type JwtPayloadBase } from '../../../common/decodeJWT'
 import { login } from './thunk'
+
+type AuthState = {
+	token: string
+	decodedToken: JwtPayloadBase | null
+	isLoading: boolean
+	error: string | null
+}
+
+const initialState: AuthState = {
+	token: '',
+	decodedToken: null,
+	isLoading: false,
+	error: null,
+}
 
 const authSlice = createSlice({
 	name: 'auth',
-	initialState: {
-		token: '',
-		decodedToken: null,
-		isLoading: false,
-		error: null,
-	},
+	initialState,
 	reducers: {
 		logout: (state) => {
 			state.token = ''
@@ -30,9 +39,7 @@ const authSlice = createSlice({
 		builder.addCase(login.rejected, (state, action) => {
 			state.isLoading = false
 			state.error =
-				typeof action.payload === 'string'
-					? action.payload
-					: (action.error.message ?? null)
+				typeof action.payload === 'string' ? action.payload : (action.error.message ?? null)
 		})
 		
 	}

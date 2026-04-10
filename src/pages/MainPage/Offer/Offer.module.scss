@@ -1,4 +1,4 @@
-@import '../../../common/styles.scss';
+@use '../../../common/styles.scss' as *;
 
 .slide {
   flex-shrink: 0;

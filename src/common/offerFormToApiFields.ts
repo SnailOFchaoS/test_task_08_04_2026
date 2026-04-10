@@ -11,8 +11,6 @@ export type OfferFormFields = {
 	important: boolean
 }
 
-export type SetOfferFormField = <K extends keyof OfferFormFields>(key: K, value: OfferFormFields[K]) => void
-
 export type OfferWriteBody = {
 	discipline: string[]
 	offerName: string

@@ -12,7 +12,7 @@ type ApiEnvelope<T> = {
 
 const readBody = async <T>(response: Response): Promise<ApiEnvelope<T> | null> => {
 	try {
-		return (await response.json()) as ApiEnvelope<T>
+		return (await response.json())
 	} catch {
 		return null
 	}

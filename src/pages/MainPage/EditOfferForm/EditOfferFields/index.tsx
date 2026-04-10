@@ -1,10 +1,10 @@
-import type { OfferFormFields, SetOfferFormField } from '../../../../common/offerFormToApiFields.ts'
+import type { OfferFormFields } from '../../../../common/offerFormToApiFields.ts'
 
 import styles from './EditOfferFields.module.scss'
 
 export type EditOfferFieldsProps = {
 	formData: OfferFormFields
-	setField: SetOfferFormField
+	setField: <K extends keyof OfferFormFields>(key: K, value: OfferFormFields[K]) => void
 	isAdmin: boolean
 }
 

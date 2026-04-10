@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react'
 
 import { Button } from '../../../components'
-import type { OfferFormFields, SetOfferFormField } from '../../../common/offerFormToApiFields.ts'
+import type { OfferFormFields } from '../../../common/offerFormToApiFields.ts'
 import type { AppDispatch, RootState } from '../../../store'
 import type { Offer } from '../../../types/offer.ts'
 import { createOffer, deleteOffer, updateOffer } from '../../../store/slices/offers/thunks.ts'
@@ -46,9 +46,11 @@ const EditOfferForm = () => {
 		important: Boolean(offer.important),
 	})
 
-	const setField = useCallback<SetOfferFormField>((key, value) => {
-		setFormData((prev) => ({ ...prev, [key]: value }))
-	}, [])
+	const setField = useCallback(
+		<K extends keyof OfferFormFields,>(key: K, value: OfferFormFields[K]) => {
+			setFormData((prev) => ({ ...prev, [key]: value }))
+		},[]
+	)
 
 	const handleCreate = async () => {
 		await dispatch(createOffer(formData)).unwrap()
